@@ -16,6 +16,7 @@
 #Kütüphanelerin Eklenmesi
 import pandas as pd
 import numpy as np
+import datetime as dt
 import seaborn as sns
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
@@ -28,30 +29,15 @@ pd.set_option('display.max_rows', None)
 pd.set_option('display.float_format', lambda x: '%.0f' % x)
 
 data = pd.read_excel(r"C:\Users\Suleakcay\PycharmProjects\pythonProject3\HAFTA3\online_retail_II.xlsx", sheet_name="Year 2010-2011")
-df = data.copy()
-df.head()
-df.shape #(541910, 8)
+#bize eksik değerleri getir!
+df.isnull().sum()
+df.shape
+df.info() # verilerimiz tipi hakkında bilgi aldık
+df.columns
 
-#en çok sipariş edilen ürünlerin sıralaması
-df.groupby("Description").agg({"Quantity": "sum"}).sort_values("Quantity", ascending=False).head()
-df["Invoice"].nunique()
-df.sort_values("Price", ascending = False).head()
-df["Country"].value_counts().head()  #sipariş sayısının büyükten küçüğe sıralamsı
-#toplam harcamayı sütun olarak ekledik
-df['TotalPrice'] = df['Price']*df['Quantity']
-#hangi ülkeden ne kadar gelir elde edildi
-df.groupby("Country").agg({"TotalPrice" : "sum"}).sort_values("TotalPrice", ascending = False).head()
+#Veri Setini İnceleme İşlemi #
 
-#Country            TotalPrice
-#United Kingdom     8187806
-#Netherlands         284662
-#EIRE                263277
-#Germany             221698
-#France              197422
-
-#en eski alışveriş tarihi
-df["InvoiceDate"].min()
-"Timestamp('2010-12-01 08:26:00')"
-#en yeni alışveriş tarihi
-df["InvoiceDate"].max()
-"Timestamp('2011-12-09 12:50:00')"
+#1- Öbek sayınızı (K) seçtikten sonra rastgele K adet merkez seçilir.
+#2- Her veri noktasıyla merkez arasındaki uzaklık hesaplandıktan sonra en yakın öbeğe atanır.
+#3- Daha sonra öbeklerde bulunan verilerin ortalamasına göre yeni merkezler belirlenir ve tekrardan noktalar yakın olduğu öbeklere atanır.
+#4- Bu işlem öbek merkezlerinde değişiklik olmayana kadar devam e
