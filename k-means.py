@@ -79,6 +79,17 @@ df.sort_values("Price", ascending=False).head(30)
 df = df[~df["Invoice"].str.contains("C", na=False)] #na =False yaptık
 df["TotalPrice"] = df["Quantity"] * df["Price"] #Burada ürünümüzün adedi ve ürünümüzün fiyatını çarpıp fiyatı bulduk
 
+###############################################################
+# Data Preparation- >veri ön işleme                           #
+###############################################################
+#bilinmeyen değerleri kaldırma işlemi gerçekleştiriyorum :)
+df.isnull().sum() #eksik gözlem değerlerini gözlemledim
+df.dropna(inplace=True) #eksik gözlem değerlerini kaldırdım
+df.shape #boyut bilgisi
+#Kartiller değerleri belirleyip oranlarına baktım
+df.describe([0.01,0.05,0.10,0.25,0.50,0.75,0.90,0.95,0.99]).T #Buradaki incelemelerimi göre Price değişkeninde
+#sıkıntılar mevcut!
+
 
 
 #1- Öbek sayınızı (K) seçtikten sonra rastgele K adet merkez seçilir.
