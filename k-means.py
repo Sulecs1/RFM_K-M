@@ -28,7 +28,7 @@ pd.set_option('display.max_rows', None)
 #virgülden sonra gösterilecek olan sayı miktarı
 pd.set_option('display.float_format', lambda x: '%.0f' % x)
 
-data = pd.read_excel(r"C:\Users\Suleakcay\PycharmProjects\pythonProject3\HAFTA3\online_retail_II.xlsx", sheet_name="Year 2010-2011")
+df = pd.read_excel(r"C:\Users\Suleakcay\PycharmProjects\pythonProject3\HAFTA3\online_retail_II.xlsx", sheet_name="Year 2010-2011")
 #bize eksik değerleri getir!
 df.isnull().sum()
 df.shape
@@ -58,6 +58,16 @@ df["Description"].value_counts().head()     #value_counts değişken değerlerim
 
 #Her ülkeden toplamda kaç adet vardır?
 df["Country"].value_counts().head()
+
+#En çok sipariş eden ülke kim,ürün adedi?Kim o zengin ülke?? :)
+df.groupby("Country").agg({"Quantity":"sum"}).sort_values("Quantity", ascending=False).head()
+
+#Peki en çok tercih edilen ürünümüz ne ?
+df.groupby("Description").agg({"Quantity":"sum"}).sort_values("Quantity", ascending=False).head()
+df.reset_index(inplace=True)
+
+#Toplam kesilen fatura sayısı nedir?
+df["Invoice"].nunique()
 
 
 
