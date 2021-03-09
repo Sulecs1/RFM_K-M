@@ -107,6 +107,45 @@ rfm_.columns = ['Recency', 'Frequency', 'Monetary']
 rfm_.head()
 rfm_ = rfm_[(rfm_["Monetary"]) > 0 & (rfm_["Frequency"] > 0)]
 
+#############################################################
+#               RFM SKOR HESAPLAMA İŞEMİ                    #
+#############################################################
+#qcut ile çeyrekliğe göre  küçükten büyüğe doğru büyüyor
+rfm_["Recency_Score"] = pd.qcut(rfm_['Recency'], 5, labels=[5, 4, 3, 2, 1])# 1 gün önce geldiyse 5 puan
+rfm_["Frequency_Score"] = pd.qcut(rfm_['Frequency'], 5, labels=[1, 2, 3, 4, 5])
+rfm_["Monetary_Score"] = pd.qcut(rfm_['Monetary'], 5, labels=[1, 2, 3, 4, 5])
+
+#string tipine  çevirdim ve birleştirip RFMSCORE sutünuna yerleştirdim.
+rfm_["RFMSCORE"] = (rfm_['Recency_Score'].astype(str)+rfm_['Frequency_Score'].astype(str)+rfm_['Monetary_Score'].astype(str))
+
+#En iyi müşteriler gösterilmektedir.
+rfm_[rfm_["RFMSCORE"] == "555"].head()
+
+##En kötü müşteriler gösterilmektedir.
+rfm_[rfm_["RFMSCORE"] == "111"].head()
+
+# RFM isimlendirmesi regex->herhangi bi text içerisinde yakalama işlemi,feature türetmek içinde bizim
+#segment isimlendirilmesi yaptık
+segment_map = { #sözlük oluşturduk
+    r'[1-2][1-2]': 'Hibernating',
+    r'[1-2][3-4]': 'At_Risk',
+    r'[1-2]5': 'Cant_Loose',
+    r'3[1-2]': 'About_to_Sleep',
+    r'33': 'Need_Attention',
+    r'[3-4][4-5]': 'Loyal_Customers',
+    r'41': 'Promising',
+    r'51': 'New_Customers',
+    r'[4-5][2-3]': 'Potential_Loyalists',
+    r'5[4-5]': 'Champions'
+}
+
+rfm_['Segment'] = rfm_['Recency_Score'].astype(str) + rfm_['Frequency_Score'].astype(str)
+
+
+rfm_['Segment'] = rfm_['Segment'].replace(segment_map, regex=True)
+#bunun keylerine göre arama yap yakaladığını value değerler ile değiştir dedik ;)
+rfm_.head()
+
 
 
 #1- Öbek sayınızı (K) seçtikten sonra rastgele K adet merkez seçilir.
