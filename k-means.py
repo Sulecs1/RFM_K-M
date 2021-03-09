@@ -34,8 +34,24 @@ df.shape #(541910, 8)
 
 #en çok sipariş edilen ürünlerin sıralaması
 df.groupby("Description").agg({"Quantity": "sum"}).sort_values("Quantity", ascending=False).head()
+df["Invoice"].nunique()
+df.sort_values("Price", ascending = False).head()
+df["Country"].value_counts().head()  #sipariş sayısının büyükten küçüğe sıralamsı
+#toplam harcamayı sütun olarak ekledik
+df['TotalPrice'] = df['Price']*df['Quantity']
+#hangi ülkeden ne kadar gelir elde edildi
+df.groupby("Country").agg({"TotalPrice" : "sum"}).sort_values("TotalPrice", ascending = False).head()
 
+#Country            TotalPrice
+#United Kingdom     8187806
+#Netherlands         284662
+#EIRE                263277
+#Germany             221698
+#France              197422
 
-
-
-
+#en eski alışveriş tarihi
+df["InvoiceDate"].min()
+"Timestamp('2010-12-01 08:26:00')"
+#en yeni alışveriş tarihi
+df["InvoiceDate"].max()
+"Timestamp('2011-12-09 12:50:00')"
