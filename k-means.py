@@ -89,6 +89,23 @@ df.shape #boyut bilgisi
 #Kartiller değerleri belirleyip oranlarına baktım
 df.describe([0.01,0.05,0.10,0.25,0.50,0.75,0.90,0.95,0.99]).T #Buradaki incelemelerimi göre Price değişkeninde
 #sıkıntılar mevcut!
+###############################################################
+#         Calculating RFM Metrics(Hesaplama İşlemi)           #
+###############################################################
+#Receny=Bugünün  tarihi -Son satın alma tarihi
+
+df["InvoiceDate"].max()   #veri setindeki son tarih
+df["InvoiceDate"].min()
+thisday=dt.datetime(2011, 12, 12) #son tarihten 3 gün sonrasını aldık :)
+
+rfm_ = df.groupby('Customer ID').agg({'InvoiceDate': lambda date: (thisday-date.max()).days,
+                                     'Invoice': lambda num: len(num),
+                                     'TotalPrice': lambda TotalPrice: TotalPrice.sum()})
+
+rfm_.columns = ['Recency', 'Frequency', 'Monetary']
+
+rfm_.head()
+rfm_ = rfm_[(rfm_["Monetary"]) > 0 & (rfm_["Frequency"] > 0)]
 
 
 
