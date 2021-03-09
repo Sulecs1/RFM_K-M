@@ -47,6 +47,20 @@ print(f"Numerical Variables:,{len(num_but_num)}:{num_but_num}")
 date_time = [col for col in df.columns if df[col].dtypes == "datetime64[ns]"]
 print(f"Datetime Variables:,{len(date_time)}:{date_time}")
 
+#eşsiz ürün sayısı:
+df["Description"].nunique()
+
+#eşsiz müşteri sayısı:
+df["Customer ID"].nunique()
+
+#Ürün çeşitlerimizin sayısı?
+df["Description"].value_counts().head()     #value_counts değişken değerlerimizin sayısına ulaştık
+
+#Her ülkeden toplamda kaç adet vardır?
+df["Country"].value_counts().head()
+
+
+
 #1- Öbek sayınızı (K) seçtikten sonra rastgele K adet merkez seçilir.
 #2- Her veri noktasıyla merkez arasındaki uzaklık hesaplandıktan sonra en yakın öbeğe atanır.
 #3- Daha sonra öbeklerde bulunan verilerin ortalamasına göre yeni merkezler belirlenir ve tekrardan noktalar yakın olduğu öbeklere atanır.
