@@ -11,3 +11,21 @@
 #UnitPrice: Ürün fiyatı (Sterlin cinsinden)
 #CustomerID: Eşsiz müşteri numarası
 #Country: Ülke ismi. Müşterinin yaşadığı ülke.
+
+
+#Kütüphanelerin Eklenmesi
+import pandas as pd
+import numpy as np
+import seaborn as sns
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+#tüm sütunları ve satırların görüntülenmesi
+pd.set_option('display.max_columns', None); pd.set_option('display.max_rows', None)
+
+#virgülden sonra gösterilecek olan sayı miktarı
+pd.set_option('display.float_format', lambda x: '%.0f' % x)
+
+def load():
+    data = pd.read_excel("online_retail_II.xlsx")
+    return data
