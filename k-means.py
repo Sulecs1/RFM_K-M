@@ -69,6 +69,16 @@ df.reset_index(inplace=True)
 #Toplam kesilen fatura sayısı nedir?
 df["Invoice"].nunique()
 
+#ürün kodu sayısı?
+df["StockCode"].nunique()
+
+#en pahalı ürünler hangileridir?
+df.sort_values("Price", ascending=False).head(30)
+
+# fatura basina ortalama kac para kazanilmistir?
+df = df[~df["Invoice"].str.contains("C", na=False)] #na =False yaptık
+df["TotalPrice"] = df["Quantity"] * df["Price"] #Burada ürünümüzün adedi ve ürünümüzün fiyatını çarpıp fiyatı bulduk
+
 
 
 #1- Öbek sayınızı (K) seçtikten sonra rastgele K adet merkez seçilir.
