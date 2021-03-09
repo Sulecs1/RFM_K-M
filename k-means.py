@@ -35,7 +35,17 @@ df.shape
 df.info() # verilerimiz tipi hakkında bilgi aldık
 df.columns
 
-#Veri Setini İnceleme İşlemi #
+
+#Değişkenlerimizi Bulmaya Başlayalım!
+print(f"Total number of observations:, df.shape[0]")
+cat_cols = [col for col in df.columns if df[col].dtypes == "O"]
+print(f"Categorical Variables:,{len(cat_cols)}:{cat_cols}")
+num_cols = [col for col in df.columns if df[col].dtypes != "O"]
+print(f"Numerical Variables:,{len(num_cols)}:{num_cols}")
+num_but_num = [col for col in df.columns if df[col].nunique() < 4500 and df[col].dtypes != "O"]#!2.sayısal olan
+print(f"Numerical Variables:,{len(num_but_num)}:{num_but_num}")
+date_time = [col for col in df.columns if df[col].dtypes == "datetime64[ns]"]
+print(f"Datetime Variables:,{len(date_time)}:{date_time}")
 
 #1- Öbek sayınızı (K) seçtikten sonra rastgele K adet merkez seçilir.
 #2- Her veri noktasıyla merkez arasındaki uzaklık hesaplandıktan sonra en yakın öbeğe atanır.
