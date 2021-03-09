@@ -20,6 +20,8 @@ import datetime as dt
 import seaborn as sns
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler,StandardScaler
 
 #tüm sütunları ve satırların görüntülenmesi
 pd.set_option('display.max_columns', None)
@@ -145,6 +147,63 @@ rfm_['Segment'] = rfm_['Recency_Score'].astype(str) + rfm_['Frequency_Score'].as
 rfm_['Segment'] = rfm_['Segment'].replace(segment_map, regex=True)
 #bunun keylerine göre arama yap yakaladığını value değerler ile değiştir dedik ;)
 rfm_.head()
+
+# minmax ölçeklendirmesi yapıldı.
+df = rfm_[['Customer ID','Recency','Frequency','Monetary']]
+sc = MinMaxScaler((0,1))
+df[['Recency','Frequency','Monetary']] = sc.fit_transform(df[['Recency','Frequency','Monetary']])
+
+# model fit edildi.
+kmeans = KMeans(n_clusters = 10)
+k_fit = kmeans.fit(df[['Recency','Frequency']])
+
+# merkezler
+centers =kmeans_model.cluster_centers_
+
+segments = kmeans_model.labels_
+df['Cluster'] = segments+1 #kümeler 0'dan başlamasın diye
+df.head()
+
+#RFM skorlarına göre müşteri segmentleri görselleştirilmiştir.
+df['RFMSegment'] = np.array(rfm_['Cluster'])
+fig, ax = plt.subplots(figsize=(12,5))
+sns.scatterplot(df.iloc[:,1], df.iloc[:,2],hue=df['RFMSegment'])
+plt.xlabel('Recency')
+plt.ylabel('Frequency')
+plt.title('Customer Segmentation via RFM Analysis')
+
+
+df.groupby(['Cluster','RFMSegment'])['RFMSegment'].count()
+
+#liste olusturduk.
+ssd = []
+
+K = range(1,30)
+
+for k in K:
+    kmeans = KMeans(n_clusters = k).fit(df[['Recency','Frequency','Monetary']])
+    ssd.append(kmeans.inertia_) #inertia her bir k değeri için ssd değerini bulur.
+
+plt.plot(K, ssd, "bx-")
+plt.xlabel("Distance Residual Sums Versus Different k Values")
+plt.title("Elbow method for Optimum number of clusters")
+
+from yellowbrick.cluster import KElbowVisualizer
+kmeans = KMeans()
+visu = KElbowVisualizer(kmeans, k = (2,20))
+visu.fit(df[['Recency','Frequency','Monetary']])
+visu.poof();
+
+# yeni optimum kümse sayısı ile model fit edilmiştir.
+kmeans = KMeans(n_clusters = 5).fit(df[['Recency','Frequency','Monetary']])
+kumeler = kmeans.labels_
+pd.DataFrame({"Customer ID": rfm_.index, "Kumeler": kumeler})
+
+# Cluster_no 0'dan başlamaktadır. Bunun için 1 eklenmiştir.
+rfm_["cluster_no"] = kumeler
+rfm_["cluster_no"] = rfm_["cluster_no"] + 1
+
+df.head()
 
 
 
